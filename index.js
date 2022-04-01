@@ -80,13 +80,15 @@ function arpDevices(range, callback) {
                 } else if (osType === 'Darwin') {
                   host.mac = stdout.split(' ')[3];
                 } else {
-                  host.mac = stdout.split('\n')[3].replace(/ +/g, ' ').replace('-', ':').split(' ')[2];
-                }
-
-                var known = macLookup(host.mac);
-                if (known) host.type = known;
-                if (ip == arpping.myIP) host.isYourDevice = true;
-                hosts.push(host);
+                  //host.mac = stdout.split('\n')[3].replace(/ +/g, ' ').replace('-', ':').split(' ')[2];
+                  host.mac = (stdout.split('\n')[3] || "").replace(/ +/g, ' ').replace(/-/g, ':').split(' ')[2];
+               }
+               if(host.mac){
+                  var known = macLookup(host.mac);
+                  if (known) host.type = known;
+                  if (ip == arpping.myIP) host.isYourDevice = true;
+                  hosts.push(host);
+               }
             }
             
             if (checked == range.length) callback(null, hosts, missing);
